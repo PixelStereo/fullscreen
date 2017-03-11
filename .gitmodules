@@ -1,0 +1,3 @@
+[submodule "3rdParty/svp"]
+	path = 3rdParty/svp
+	url = https://github.com/PixelStereo/svp

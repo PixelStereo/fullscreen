@@ -35,16 +35,37 @@ class PlayerUI(QWidget):
         self.play_button.clicked.connect(self.player.play)
         self.eject_button = QPushButton('Eject')
         self.eject_button.clicked.connect(self.player.eject)
+        self.frameSlider = QSlider(Qt.Horizontal)
+        self.frameSlider.setTickPosition(QSlider.TicksBelow)
+        self.frameSlider.setTickInterval(10)
+        self.player.new_frame.connect(self.updateFrameSlider)
         self.control_layout = QGridLayout()
         self.control_layout.addWidget(self.media_bin, 0, 0, 4, 2)
         self.control_layout.addWidget(self.filepath_label, 5, 0, 1, 4)
         self.control_layout.addWidget(self.play_button, 6, 0, 1, 1)
         self.control_layout.addWidget(self.pause_button, 6, 1, 1, 1)
         self.control_layout.addWidget(self.eject_button, 6, 2, 1, 1)
-        self.control_layout.addWidget(self.preview, 7, 0, 6, 1)
+        self.control_layout.addWidget(self.frameSlider, 7, 0, 1, 4)
+        self.control_layout.addWidget(self.preview, 8, 0, 6, 1)
         #self.setMaximumSize(300, 200)
         self.setLayout(self.control_layout)
         self.media_bin.refresh()
+
+    def updateFrameSlider(self):
+        hasFrames = (self.player.current_frame >= 0)
+
+        if hasFrames:
+            if self.player.frames > 0:
+                self.frameSlider.setMaximum(self.player.frames - 1)
+            elif self.player.current_frame > self.frameSlider.maximum():
+                self.frameSlider.setMaximum(self.player.current_frame)
+
+            self.frameSlider.setValue(self.player.current_frame)
+        else:
+            self.frameSlider.setMaximum(0)
+
+        #self.frameLabel.setEnabled(hasFrames)
+        self.frameSlider.setEnabled(hasFrames)
 
     @property
     def filepath(self):

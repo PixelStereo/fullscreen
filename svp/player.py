@@ -11,13 +11,13 @@ from PyQt5.QtGui import QImage, QPixmap
 import cv2
 
 class Player(QWidget):
-    def __init__(self, *args):
+    def __init__(self, filepath):
         super(QWidget, self).__init__()
         # store displays
         self._displays = []
         # set openCV capture
-        self.cap = cv2.VideoCapture(*args)
-        self.filepath = args[0]
+        self.cap = cv2.VideoCapture(filepath)
+        self.filepath = filepath
         self.timer = QTimer()
         self.timer.setInterval(1000./25)
         self.timer.timeout.connect(self.nextFrameSlot)
@@ -44,6 +44,7 @@ class Player(QWidget):
             self.eject()
 
     def load(self, filepath):
+        self.cap.release()
         self.filepath = filepath
         self.cap.open(self.filepath)
         ret, frame = self.cap.read()
@@ -55,15 +56,11 @@ class Player(QWidget):
                 self.fps = self.cap.get(5)
                 self.timer.setInterval(1000./self.fps)
                 print(self.filepath, self.fps, self.width, self.height)
-        self.start()
-
-    def start(self):
-        self.timer.start()
 
     def pause(self):
         self.timer.stop()
     
-    def resume(self, state):
+    def play(self, state):
         self.timer.start()
 
     def eject(self):

@@ -18,54 +18,90 @@ class PlayerUI(QWidget):
     """
     def __init__(self, player, media_bin=None):
         super(PlayerUI, self).__init__()
+        # create a media_bin
         self.media_bin = MediaBin(self, '/Users/reno/Dropbox')
+        # create a player
         self.player = player
+        # What are these 2 lines?
+        #self.player.setParent(self)
+        #self.player.setWindowFlags(Qt.Tool)
+        # create an embeded preview window 
         self.preview = new_display('Preview', False)
         self.player.addDisplay(self.preview)
+        # filepath UI
         self.filepath_label = QLabel(self.player.filepath)
+        # Mute Button
         self.mute_button = QPushButton('Black')
         self.mute_button.setCheckable(True)
         self.mute_button.toggled.connect(self.preview.mute)
-        self.pause_button = QPushButton('Pause')
-        self.pause_button.clicked.connect(self.player.pause)
+        # Play / Pause Button
+        self.playpause_button = QPushButton('Pause')
+        self.playpause_button.setCheckable(True)
+        self.playpause_button.toggled.connect(self.playpause)
         # self.player.setFPS(1)
-        self.player.setParent(self)
-        self.player.setWindowFlags(Qt.Tool)
-        self.play_button = QPushButton('Play')
-        self.play_button.clicked.connect(self.player.play)
         self.eject_button = QPushButton('Eject')
         self.eject_button.clicked.connect(self.player.eject)
+        # frame slider 
         self.frameSlider = QSlider(Qt.Horizontal)
         self.frameSlider.setTickPosition(QSlider.TicksBelow)
+        self.frameSlider.sliderMoved.connect(self.player.seek)
+        self.frameSlider.sliderPressed.connect(self.stop_render)
+        self.frameSlider.sliderReleased.connect(self.start_render)
         self.frameSlider.setTickInterval(10)
+        self.frame = QSpinBox()
+        self.frame.setMinimumWidth(60)
+        self.frameSlider.valueChanged.connect(self.frame.setValue)
+        # new frame from player update slider's value
         self.player.new_frame.connect(self.updateFrameSlider)
+        # make a nice layout of buttons
         self.control_layout = QGridLayout()
         self.control_layout.addWidget(self.media_bin, 0, 0, 4, 2)
-        self.control_layout.addWidget(self.filepath_label, 5, 0, 1, 4)
-        self.control_layout.addWidget(self.play_button, 6, 0, 1, 1)
-        self.control_layout.addWidget(self.pause_button, 6, 1, 1, 1)
+        self.control_layout.addWidget(self.filepath_label, 5, 0, 1, 8)
+        self.control_layout.addWidget(self.playpause_button, 6, 0, 1, 1)
         self.control_layout.addWidget(self.eject_button, 6, 2, 1, 1)
-        self.control_layout.addWidget(self.frameSlider, 7, 0, 1, 4)
+        self.control_layout.addWidget(self.frameSlider, 7, 0, 1, 1)
+        self.control_layout.addWidget(self.frame, 7, 1, 1, 1)
         self.control_layout.addWidget(self.preview, 8, 0, 6, 1)
-        #self.setMaximumSize(300, 200)
         self.setLayout(self.control_layout)
         self.media_bin.refresh()
 
+    def start_render(self):
+        #self.player.timer.setActive
+        if self.player.play:
+            self.player.timer.start()
+
+    def stop_render(self):
+        # slider is pressed
+        if self.player.play:
+            self.player.timer.stop()
+
+
     def updateFrameSlider(self):
-        hasFrames = (self.player.current_frame >= 0)
+        if not self.frameSlider.isSliderDown():
+            hasFrames = (self.player.current_frame >= 0)
 
-        if hasFrames:
-            if self.player.frames > 0:
-                self.frameSlider.setMaximum(self.player.frames - 1)
-            elif self.player.current_frame > self.frameSlider.maximum():
-                self.frameSlider.setMaximum(self.player.current_frame)
+            if hasFrames:
+                if self.player.frames > 0:
+                    self.frameSlider.setMaximum(self.player.frames - 1)
+                    self.frame.setMaximum(self.player.frames - 1)
+                elif self.player.current_frame > self.frameSlider.maximum():
+                    self.frameSlider.setMaximum(self.player.current_frame)
+                    self.frame.setMaximum(self.player.current_frame)
 
-            self.frameSlider.setValue(self.player.current_frame)
+                self.frameSlider.setValue(self.player.current_frame)
+            else:
+                self.frameSlider.setMaximum(0)
+                self.frame.setMaximum(0)
+            self.frameSlider.setEnabled(hasFrames)
+            self.frame.setEnabled(hasFrames)
+
+    def playpause(self, state):
+        if state:
+            self.playpause_button.setText('playing')
+            self.player.play = True
         else:
-            self.frameSlider.setMaximum(0)
-
-        #self.frameLabel.setEnabled(hasFrames)
-        self.frameSlider.setEnabled(hasFrames)
+            self.playpause_button.setText('pausing')
+            self.player.pause()
 
     @property
     def filepath(self):

@@ -14,24 +14,30 @@ from PyQt5.QtCore import pyqtSignal
 class Player(QWidget):
     # signal that there is a new frame for the selected universe
     new_frame = pyqtSignal()
+
     def __init__(self, filepath):
         super(QWidget, self).__init__()
         # store displays
         self._displays = []
         # set openCV capture
-        self.cap = cv2.VideoCapture(filepath)
+        self.cap = cv2.VideoCapture()
         self.filepath = filepath
         self.timer = QTimer()
-        self.timer.setInterval(1000./25)
-        self.timer.timeout.connect(self.nextFrameSlot)
+        self.fps = 25
+        self._play = False
+        self.timer.timeout.connect(self.render_frame)
 
-    def setFPS(self, fps):
-        self.fps = fps
+    @property
+    def fps(self):
+        return 1000./self.timer.interval()
+    @fps.setter
+    def fps(self, fps):
+        self.timer.setInterval(1000./fps)
 
     def addDisplay(self, display):
         self._displays.append(display)
 
-    def nextFrameSlot(self):
+    def render_frame(self):
         ret, frame = self.cap.read()
         #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         if ret:
@@ -47,27 +53,51 @@ class Player(QWidget):
             self.eject()
 
     def load(self, filepath):
-        self.cap.release()
+        # release first the previous playhead if existing
+        if self.cap:
+            self.cap.release()
+        # store filepath
         self.filepath = filepath
+        # open the capture
         self.cap.open(self.filepath)
+
         ret, frame = self.cap.read()
         if ret:
-            if frame.any():
-                #['CV_CAP_PROP_POS_MSEC','CV_CAP_PROP_POS_FRAMES','CV_CAP_PROP_POS_AVI_RATIO','CV_CAP_PROP_FRAME_WIDTH','CV_CAP_PROP_FRAME_HEIGHT','CV_CAP_PROP_FPS','CV_CAP_PROP_FOURCC','CV_CAP_PROP_FRAME_COUNT','CV_CAP_PROP_FORMAT','CV_CAP_PROP_MODE','CV_CAP_PROP_CONVERT_RGB','CV_CAP_PROP_WHITE_BALANCE_U','CV_CAP_PROP_WHITE_BALANCE_V','CV_CAP_PROP_BUFFERSIZE']
+            try:
+                # get properties of the movie
                 self.width = self.cap.get(3)
                 self.height = self.cap.get(4)
-                self.fps = self.cap.get(5)
+                self.fps = (self.cap.get(5))
                 self.frames = self.cap.get(7)
-                self.timer.setInterval(1000./self.fps)
-                #for i in range(20):
-                #   print(self.cap.get(i))
-                print(self.filepath, self.fps, self.width, self.height)
+                print(self.filepath.split('/')[-1], self.fps, self.width, self.height)
+            except:
+                print('skip frame')
+
+    def seek(self, frame):
+        # check that the frame exists
+        if frame <= self.frames:
+            # the frame exists, check if player is running
+            self.cap.set(1, frame)
+            self.render_frame()
+        else:
+            print('frame ' + str(frame) + ' does not exist')
 
     def pause(self):
-        self.timer.stop()
+        self.play = False
     
+    def resume(self):
+        self.play = True
+
+    @property
+    def play(self):
+        return self._play
+    @play.setter
     def play(self, state):
-        self.timer.start()
+        self._play = state
+        if state:
+            self.timer.start()
+        else:
+            self.timer.stop()
 
     def eject(self):
         self.cap.release()

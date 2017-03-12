@@ -72,6 +72,8 @@ class PlayerUI(QWidget):
 
     def stop_render(self):
         # slider is pressed
+        if self.frameSlider.value() != self.player.current_frame:
+            self.player.seek(self.frameSlider.value())
         if self.player.play:
             self.player.timer.stop()
 

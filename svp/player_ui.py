@@ -34,8 +34,12 @@ class PlayerUI(QWidget):
         self.mute_button = QPushButton('Black')
         self.mute_button.setCheckable(True)
         self.mute_button.toggled.connect(self.preview.mute)
+        # Autostart
+        self.autostart_button = QPushButton('Autostart')
+        self.autostart_button.setCheckable(True)
+        #self.autostart_button.toggled.connect(self.player.autostart)
         # Play / Pause Button
-        self.playpause_button = QPushButton('Pause')
+        self.playpause_button = QPushButton('Play')
         self.playpause_button.setCheckable(True)
         self.playpause_button.toggled.connect(self.playpause)
         # self.player.setFPS(1)
@@ -51,6 +55,7 @@ class PlayerUI(QWidget):
         self.frame = QSpinBox()
         self.frame.setMinimumWidth(60)
         self.frameSlider.valueChanged.connect(self.frame.setValue)
+        self.frame.valueChanged.connect(self.frameSlider.setValue)
         # new frame from player update slider's value
         self.player.new_frame.connect(self.updateFrameSlider)
         # make a nice layout of buttons
@@ -58,6 +63,7 @@ class PlayerUI(QWidget):
         self.control_layout.addWidget(self.media_bin, 0, 0, 4, 2)
         self.control_layout.addWidget(self.filepath_label, 5, 0, 1, 8)
         self.control_layout.addWidget(self.playpause_button, 6, 0, 1, 1)
+        self.control_layout.addWidget(self.autostart_button, 6, 1, 1, 1)
         self.control_layout.addWidget(self.eject_button, 6, 2, 1, 1)
         self.control_layout.addWidget(self.frameSlider, 7, 0, 1, 1)
         self.control_layout.addWidget(self.frame, 7, 1, 1, 1)
@@ -99,10 +105,10 @@ class PlayerUI(QWidget):
 
     def playpause(self, state):
         if state:
-            self.playpause_button.setText('playing')
+            self.playpause_button.setText('Pause')
             self.player.play = True
         else:
-            self.playpause_button.setText('pausing')
+            self.playpause_button.setText('Play')
             self.player.pause()
 
     @property

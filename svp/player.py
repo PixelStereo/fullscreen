@@ -21,6 +21,9 @@ class Player(QWidget):
         self._displays = []
         # set openCV capture
         self.cap = cv2.VideoCapture()
+        self.autostart = True
+        self.current_frame = None
+        self.loop_points = None
         self.filepath = filepath
         self.timer = QTimer()
         self.fps = 25
@@ -44,6 +47,7 @@ class Player(QWidget):
             img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
             pix = QPixmap.fromImage(img)
             self.current_frame = self.cap.get(1)
+            # emit the new frame signal
             self.new_frame.emit()
             if self._displays:
                 for display in self._displays:
@@ -69,9 +73,30 @@ class Player(QWidget):
                 self.height = self.cap.get(4)
                 self.fps = (self.cap.get(5))
                 self.frames = self.cap.get(7)
+                self.loop_points = [0, self.frames]
                 print(self.filepath.split('/')[-1], self.fps, self.width, self.height)
+                if self.autostart:
+                    self.play(True)
             except:
                 print('skip frame')
+
+    @property
+    def loop_points(self):
+        return self._loop_points
+    @loop_points.setter
+    def loop_points(self, points):
+        self._loop_points = points
+
+    @property
+    def autostart(self):
+        """
+        if True, player will start when load a movie
+        if False, player will load the movie and 
+        """
+        return self._autostart
+    @autostart.setter
+    def autostart(self, state):
+        self._autostart = state
 
     def seek(self, frame):
         # check that the frame exists

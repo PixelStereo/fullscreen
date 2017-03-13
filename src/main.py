@@ -28,6 +28,7 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout)
         self.setWindowTitle('Video Player')
         self.move(0, 0)
+        self.setFixedSize(800, 600)
         self.setCentralWidget(widget)
         self.show()
 
@@ -41,5 +42,10 @@ except Exception as error:
 if __name__ == '__main__':
     import sys
     app = QApplication(sys.argv)
+    try:
+        app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+        pass
+    except Exception as error:
+        print('failed ' + str(error))
     window = MainWindow()
     sys.exit(app.exec_())

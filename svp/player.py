@@ -76,7 +76,7 @@ class Player(QWidget):
                 self.loop_points = [0, self.frames]
                 print(self.filepath.split('/')[-1], self.fps, self.width, self.height)
                 if self.autostart:
-                    self.play(True)
+                    self.play = True
             except:
                 print('skip frame')
 
@@ -126,7 +126,7 @@ class Player(QWidget):
 
     def eject(self):
         self.cap.release()
-        self.timer.stop()
+        self.pause()
         for display in self._displays:
             if display.available:
                 display.clear()

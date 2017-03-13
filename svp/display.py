@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QSizePolicy
 from PyQt5.QtGui import QPixmap
 from PyQt5.Qt import *
 
+
 class Display(QLabel):
     """docstring for Display"""
     def __init__(self, name=None, active=True, source=None):
@@ -25,6 +26,7 @@ class Display(QLabel):
         #self.video_frame.setAlignment(Qt.AlignCenter)
         #self.video_frame.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self._fullscreen = False
+        self.setAlignment(Qt.AlignCenter)
         self.active = active
         print(self.active)
 
@@ -42,6 +44,7 @@ class Display(QLabel):
             self._source.clear.connect(self.clear)
 
     def new_frame(self, pix):
+        pix = pix.scaled(self.size(), Qt.KeepAspectRatio)
         self.setPixmap(pix)
 
     @property

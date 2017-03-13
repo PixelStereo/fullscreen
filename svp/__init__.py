@@ -24,8 +24,8 @@ def get_players():
 	return __players__
 
 __displays__ = []
-def new_display(name='Untitled', visible=True):
-	display = Display(name, visible)
+def new_display(*args, **kwargs):
+	display = Display(*args, **kwargs)
 	__displays__.append(display)
 	return display
 

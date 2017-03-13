@@ -13,12 +13,10 @@ from PyQt5.QtCore import pyqtSignal
 
 class Player(QWidget):
     # signal that there is a new frame for the selected universe
-    new_frame = pyqtSignal()
+    new_frame = pyqtSignal(QPixmap)
 
     def __init__(self, filepath):
         super(QWidget, self).__init__()
-        # store displays
-        self._displays = []
         # set openCV capture
         self.cap = cv2.VideoCapture()
         self.autostart = True
@@ -37,9 +35,6 @@ class Player(QWidget):
     def fps(self, fps):
         self.timer.setInterval(1000./fps)
 
-    def addDisplay(self, display):
-        self._displays.append(display)
-
     def render_frame(self):
         ret, frame = self.cap.read()
         #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -48,13 +43,18 @@ class Player(QWidget):
             pix = QPixmap.fromImage(img)
             self.current_frame = self.cap.get(1)
             # emit the new frame signal
-            self.new_frame.emit()
-            if self._displays:
-                for display in self._displays:
-                    if display.available:
-                        display.video_frame.setPixmap(pix)
+            self.new_frame.emit(pix)
         else:
+            self.end_action()
+
+    def end_action(self, action='loop'):
+        if action == 'loop':
+            self.seek(0)
+        elif action == 'freeze':
+            self.play = False
+        elif action == 'eject':
             self.eject()
+
 
     def load(self, filepath):
         # release first the previous playhead if existing
@@ -71,10 +71,11 @@ class Player(QWidget):
                 # get properties of the movie
                 self.width = self.cap.get(3)
                 self.height = self.cap.get(4)
-                self.fps = (self.cap.get(5))
                 self.frames = self.cap.get(7)
+                self.fps = (self.cap.get(5))
                 self.loop_points = [0, self.frames]
                 print(self.filepath.split('/')[-1], self.fps, self.width, self.height)
+                self.render_frame()
                 if self.autostart:
                     self.play = True
             except:
@@ -127,6 +128,4 @@ class Player(QWidget):
     def eject(self):
         self.cap.release()
         self.pause()
-        for display in self._displays:
-            if display.available:
-                display.clear()
+        self.clear.emit()

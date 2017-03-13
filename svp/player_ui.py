@@ -26,8 +26,7 @@ class PlayerUI(QWidget):
         #self.player.setParent(self)
         #self.player.setWindowFlags(Qt.Tool)
         # create an embeded preview window 
-        self.preview = new_display('Preview', False)
-        self.player.addDisplay(self.preview)
+        self.preview = new_display('Preview', False, self.player)
         # filepath UI
         self.filepath_label = QLabel(self.player.filepath)
         # Mute Button

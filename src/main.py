@@ -18,9 +18,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.player = new_player()
-        self.desktop = new_display('Desktop Display', False)
-        self.desktop.available = False
-        self.player.addDisplay(self.desktop)
+        self.window = new_display('Desktop Display', False, self.player)
+        self.window.setEnabled(True)
+        self.window.move(0, 800)
         player_ui = PlayerUI(self.player)
         layout = QGridLayout()
         layout.addWidget(player_ui, 1, 0)

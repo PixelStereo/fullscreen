@@ -11,7 +11,7 @@ from PyQt5.QtGui import QImage, QPixmap
 import os
 from PyQt5.Qt import *
 
-from __init__ import new_display
+from api import new_display
 
 class PlayerUI(QWidget):
     """
@@ -22,11 +22,12 @@ class PlayerUI(QWidget):
         self.media_bin = MediaBin(self, '/Users/reno/Dropbox')
         # create a player
         self.player = player
+        self.player.clear.connect(self.media_bin.clearSelection)
         # What are these 2 lines?
         #self.player.setParent(self)
         #self.player.setWindowFlags(Qt.Tool)
         # create an embeded preview window 
-        self.preview = new_display('Preview', False, self.player)
+        self.preview = new_display('Preview', True, self.player)
         # filepath UI
         self.filepath_label = QLabel(self.player.filepath)
         # Mute Button

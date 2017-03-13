@@ -10,8 +10,9 @@ svp_path = os.path.abspath('..')
 sys.path.append(svp_path)
 
 import svp
-from svp import new_player, new_display
+from svp.api import new_player, new_display, get_players
 from svp.player_ui import PlayerUI
+from svp.display_control import DisplayControl
 
 
 class MainWindow(QMainWindow):
@@ -22,8 +23,10 @@ class MainWindow(QMainWindow):
         self.window.setEnabled(True)
         self.window.move(0, 800)
         player_ui = PlayerUI(self.player)
+        display_control = DisplayControl(self.window)
         layout = QGridLayout()
         layout.addWidget(player_ui, 1, 0)
+        layout.addWidget(display_control, 1, 1)
         widget = QWidget()
         widget.setLayout(layout)
         self.setWindowTitle('Video Player')

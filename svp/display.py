@@ -25,9 +25,8 @@ class Display(QLabel):
         #self.video_frame.setAlignment(Qt.AlignCenter)
         #self.video_frame.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self._fullscreen = False
-        self._active = self.isEnabled()
-        if self.active:
-            self.show()
+        self.active = active
+        print(self.active)
 
     @property
     def source(self):
@@ -35,10 +34,12 @@ class Display(QLabel):
     @source.setter
     def source(self, source):
         if self._source:
-            self._source.new_frame.disconnect(self.setPixmap(pix))
+            self._source.new_frame.disconnect(self.new_frame)
+            self._source.clear.disconnect(self.clear)
         self._source = source
         if source:
             self._source.new_frame.connect(self.new_frame)
+            self._source.clear.connect(self.clear)
 
     def new_frame(self, pix):
         self.setPixmap(pix)
@@ -48,6 +49,10 @@ class Display(QLabel):
         return self._fullscreen
     @fullscreen.setter
     def fullscreen(self, state):
+    	if state:
+    		self.showFullScreen()
+    	else:
+    		self.showNormal()
         self._fullscreen = state
 
     def clear(self):
@@ -62,7 +67,10 @@ class Display(QLabel):
 
     @property
     def active(self):
-        return self.isEnabled()
+        return self.isVisible()
     @active.setter
     def active(self, state):
-        self.setEnabled(state)
+        if state:
+            self.show()
+        else:
+            self.hide()

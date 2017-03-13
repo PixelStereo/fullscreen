@@ -14,6 +14,7 @@ from PyQt5.QtCore import pyqtSignal
 class Player(QWidget):
     # signal that there is a new frame for the selected universe
     new_frame = pyqtSignal(QPixmap)
+    clear = pyqtSignal()
 
     def __init__(self, filepath):
         super(QWidget, self).__init__()
@@ -40,6 +41,7 @@ class Player(QWidget):
         #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         if ret:
             img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
+            img = img.rgbSwapped()
             pix = QPixmap.fromImage(img)
             self.current_frame = self.cap.get(1)
             # emit the new frame signal
@@ -47,7 +49,7 @@ class Player(QWidget):
         else:
             self.end_action()
 
-    def end_action(self, action='loop'):
+    def end_action(self, action='eject'):
         if action == 'loop':
             self.seek(0)
         elif action == 'freeze':

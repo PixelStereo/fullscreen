@@ -18,7 +18,7 @@ class Display(QLabel):
         self.name = name
         self._source = None
         self.source = source
-        self.setFixedSize(640, 360)
+        self.setFixedSize(320, 180)
         #self.video_frame = QLabel()
         #self.layout = QVBoxLayout()
         #self.layout.addWidget(self.video_frame)

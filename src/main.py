@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
         display_control = DisplayControl(self.window)
         layout = QGridLayout()
         layout.addWidget(player_ui, 0, 0)
-        layout.addWidget(display_control, 0, 1)
+        layout.addWidget(display_control, 1, 0)
         widget = QWidget()
         widget.setLayout(layout)
         self.setWindowTitle('Video Player')

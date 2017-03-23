@@ -40,6 +40,7 @@ class DisplayControl(QWidget):
         self.setLayout(layout)
         self.visible.stateChanged.connect(self.active)
         self.sources.currentTextChanged.connect(self.source)
+        self.visible.setEnabled(False)
 
     def source(self, source):
         if source == 'No Source':
@@ -56,6 +57,10 @@ class DisplayControl(QWidget):
         for display in get_displays():
             if display.name == display_name:
                 self.selected = display
+        if self.selected:
+            self.visible.setEnabled(True)
+        else:
+            self.visible.setEnabled(False)
 
     @property
     def display(self):

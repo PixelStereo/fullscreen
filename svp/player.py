@@ -21,6 +21,7 @@ class Player(QWidget):
     def __init__(self, name, filepath):
         super(QWidget, self).__init__()
         self.name = name
+        self._loop = 'repeat'
         self.filepath = filepath
         self.loop_points = None
         # set openCV capture
@@ -52,7 +53,13 @@ class Player(QWidget):
             self.new_frame.emit(pix)
             self.new_frame_index.emit(current_frame)
         else:
-            self.end_action()
+            print(self.loop)
+            if self.loop == 'repeat':
+                self.seek(0)
+            elif self.loop == 'one-shot':
+                self.end_action()
+            else:
+                self.end_action()
 
     def end_action(self, action='eject'):
         if action == 'loop':
@@ -87,6 +94,13 @@ class Player(QWidget):
                     self.play = True
             except:
                 print('skip frame')
+
+    @property
+    def loop(self):
+        return self._loop
+    @loop.setter
+    def loop(self, mode):
+        self._loop = mode
 
     @property
     def loop_points(self):

@@ -5,13 +5,14 @@
 Player Class
 """
 
-from PyQt5.QtWidgets import QListWidget, QWidget, QLabel, QPushButton, QGridLayout
+from PyQt5.QtWidgets import QListWidget, QWidget, QLabel, QPushButton, QGridLayout, QGroupBox, QHBoxLayout
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
 import os
 from PyQt5.Qt import *
 
 from svp.api import new_display
+from svp.RangeSlider import QHSpinBoxRangeSlider
 
 class PlayerUI(QWidget):
     """
@@ -38,10 +39,18 @@ class PlayerUI(QWidget):
         self.autostart_button = QCheckBox('Autostart')
         self.autostart_button.toggled.connect(self.autostart)
         self.autostart_button.setChecked(self.player.autostart)
+        # looppoints
+        self.looppoints_slider = QHSpinBoxRangeSlider([0, 100, 1], [0, 100])
         # Play / Pause Button
         self.playpause_button = QCheckBox('Play')
         self.playpause_button.setCheckable(True)
         self.playpause_button.toggled.connect(self.playpause)
+        # loop
+        self.loop_menu = QComboBox()
+        self.loop_menu.addItem('one-shot')
+        self.loop_menu.addItem('repeat')
+        self.loop_menu.addItem('palindrome')
+        self.loop_menu.currentTextChanged.connect(self.loop)
         # self.player.setFPS(1)
         self.eject_button = QPushButton('Eject')
         self.eject_button.clicked.connect(self.player.eject)
@@ -57,17 +66,30 @@ class PlayerUI(QWidget):
         # new frame from player update slider's value
         self.player.new_frame_index.connect(self.updateFrameUIs)
         self.player.clear.connect(self.updateFrameUIs)
-        # make a nice layout of buttons
+        # Transport Group
+        self.files = QGroupBox()
+        self.files_layout = QGridLayout()
+        self.files.setLayout(self.files_layout)
+        self.files_layout.addWidget(self.media_bin)
+        # Transport Group
+        self.control = QGroupBox()
         self.control_layout = QGridLayout()
-        self.control_layout.addWidget(self.media_bin, 0, 0, 4, 2)
+        self.control.setLayout(self.control_layout)
+        self.control.setFixedSize(600, 480)
+        self.control_layout.addWidget(self.files, 0, 0, 2, 4)
         self.control_layout.addWidget(self.filepath_label, 5, 0, 1, 4)
-        self.control_layout.addWidget(self.playpause_button, 0, 3, 1, 1)
-        self.control_layout.addWidget(self.autostart_button, 1, 3, 1, 1)
-        self.control_layout.addWidget(self.eject_button, 2, 3, 1, 1)
-        self.control_layout.addWidget(self.frameSlider, 7, 0, 1, 1)
-        self.control_layout.addWidget(self.frame, 7, 1, 1, 1)
-        self.control_layout.addWidget(self.preview, 8, 0, 6, 1)
-        self.setLayout(self.control_layout)
+        self.control_layout.addWidget(self.playpause_button, 6, 0, 1, 1)
+        self.control_layout.addWidget(self.loop_menu, 6, 1, 1, 1)
+        self.control_layout.addWidget(self.autostart_button, 6, 2, 1, 1)
+        self.control_layout.addWidget(self.eject_button, 6, 3, 1, 1)
+        self.control_layout.addWidget(self.frameSlider, 7, 0, 1, 4)
+        self.control_layout.addWidget(self.frame, 7, 5, 1, 1)
+        self.control_layout.addWidget(self.looppoints_slider, 8, 0, 4, 4)
+        # General Layout
+        self.general_layout = QHBoxLayout()
+        self.general_layout.addWidget(self.control)
+        self.general_layout.addWidget(self.preview)
+        self.setLayout(self.general_layout)
         self.media_bin.refresh()
 
     def start_render(self):
@@ -107,6 +129,9 @@ class PlayerUI(QWidget):
 
     def autostart(self, state):
         self.player.autostart = state
+
+    def loop(self, mode):
+        self.player.loop = mode
 
     @property
     def filepath(self):

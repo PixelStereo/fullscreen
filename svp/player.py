@@ -14,16 +14,19 @@ from PyQt5.QtCore import pyqtSignal
 class Player(QWidget):
     # signal that there is a new frame for the selected universe
     new_frame = pyqtSignal(QPixmap)
+    new_load = pyqtSignal()
+    new_frame_index = pyqtSignal(int)
     clear = pyqtSignal()
 
-    def __init__(self, filepath):
+    def __init__(self, name, filepath):
         super(QWidget, self).__init__()
+        self.name = name
+        self.filepath = filepath
+        self.loop_points = None
         # set openCV capture
         self.cap = cv2.VideoCapture()
         self.autostart = True
         self.current_frame = None
-        self.loop_points = None
-        self.filepath = filepath
         self.timer = QTimer()
         self.fps = 25
         self._play = False
@@ -43,9 +46,11 @@ class Player(QWidget):
             img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
             img = img.rgbSwapped()
             pix = QPixmap.fromImage(img)
-            self.current_frame = self.cap.get(1)
+            current_frame = self.cap.get(1)
+            print('render frame : ' + str(current_frame))
             # emit the new frame signal
             self.new_frame.emit(pix)
+            self.new_frame_index.emit(current_frame)
         else:
             self.end_action()
 
@@ -66,7 +71,7 @@ class Player(QWidget):
         self.filepath = filepath
         # open the capture
         self.cap.open(self.filepath)
-
+        self.new_load.emit()
         ret, frame = self.cap.read()
         if ret:
             try:
@@ -105,19 +110,34 @@ class Player(QWidget):
         # check that the frame exists
         if frame <= self.frames:
             # the frame exists, check if player is running
+            # set playhead to the desired frame
             self.cap.set(1, frame)
+            # render the frame
             self.render_frame()
         else:
             print('frame ' + str(frame) + ' does not exist')
 
     def pause(self):
+        """
+        calling this method will pause the media
+        same effect than self.play = 0
+        """
         self.play = False
     
     def resume(self):
+        """
+        calling this methid will play the media
+        same effect than self.play = 1
+        """
         self.play = True
 
     @property
     def play(self):
+        """
+        The play property
+        if set to True, media is playing
+        if set to False, media is pausing
+        """
         return self._play
     @play.setter
     def play(self, state):
@@ -128,6 +148,10 @@ class Player(QWidget):
             self.timer.stop()
 
     def eject(self):
+        """
+        unload the media from the player
+        """
+        # release the player
         self.cap.release()
         self.pause()
         self.clear.emit()

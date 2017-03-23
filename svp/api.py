@@ -5,12 +5,12 @@
 api access to __players__ and __displays__ 
 """
 
-from player import Player
-from display import Display
-from __init__ import __displays__, __players__
+from svp.player import Player
+from svp.display import Display
+from svp import __displays__, __players__
 
-def new_player(name='Untitled'):
-	player = Player(name)
+def new_player(name=None, filepath=None):
+	player = Player(name, filepath)
 	__players__.append(player)
 	return player
 

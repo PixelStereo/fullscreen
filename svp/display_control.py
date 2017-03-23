@@ -11,22 +11,28 @@ from PyQt5.QtGui import QImage, QPixmap
 import os
 from PyQt5.Qt import *
 
-from api import get_displays, get_players
+from svp.api import get_displays, get_players
 
 class DisplayControl(QWidget):
     """
     """
     def __init__(self, display):
         super(DisplayControl, self).__init__()
+        # initialise selection : 
+        self.selected = None
         self.visible = QCheckBox('active')
         self._display = display
         self.sources = QComboBox()
+        self.sources.setMinimumWidth = 150
         self.sources.addItem('No Source')
         for source in get_players():
-            self.sources.addItem(str(source))
+            self.sources.addItem(source.name)
         self.displays = QComboBox()
+        self.displays.setMinimumWidth = 150
         for display in get_displays():
-            self.displays.addItem(str(display))
+            self.displays.addItem(display.name)
+        self.displays.currentTextChanged.connect(self.selection)
+        self.displays.setCurrentIndex(0)
         layout = QHBoxLayout()
         layout.addWidget(self.displays)
         layout.addWidget(self.sources)
@@ -34,7 +40,6 @@ class DisplayControl(QWidget):
         self.setLayout(layout)
         self.visible.stateChanged.connect(self.active)
         self.sources.currentTextChanged.connect(self.source)
-        self.displays.currentTextChanged.connect(self.selection)
 
     def source(self, source):
         if source == 'No Source':
@@ -45,13 +50,12 @@ class DisplayControl(QWidget):
                     self.display.source = player
 
     def active(self, state):
-        self.display.active = state
+        self.selected.active = state
 
-    def selection(self, display):
+    def selection(self, display_name):
         for display in get_displays():
-            if str(display) == display:
-                self.display.source = player
-
+            if display.name == display_name:
+                self.selected = display
 
     @property
     def display(self):

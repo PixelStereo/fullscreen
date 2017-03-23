@@ -28,7 +28,6 @@ class Display(QLabel):
         self._fullscreen = False
         self.setAlignment(Qt.AlignCenter)
         self.active = active
-        print(self.active)
 
     @property
     def source(self):
@@ -52,10 +51,10 @@ class Display(QLabel):
         return self._fullscreen
     @fullscreen.setter
     def fullscreen(self, state):
-    	if state:
-    		self.showFullScreen()
-    	else:
-    		self.showNormal()
+        if state:
+            self.showFullScreen()
+        else:
+            self.showNormal()
         self._fullscreen = state
 
     def clear(self):

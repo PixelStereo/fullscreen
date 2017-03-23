@@ -11,7 +11,7 @@ from PyQt5.QtGui import QImage, QPixmap
 import os
 from PyQt5.Qt import *
 
-from api import new_display
+from svp.api import new_display
 
 class PlayerUI(QWidget):
     """
@@ -35,13 +35,14 @@ class PlayerUI(QWidget):
         self.mute_button.setCheckable(True)
         self.mute_button.toggled.connect(self.preview.mute)
         # Autostart
-        self.autostart_button = QPushButton('Autostart')
-        self.autostart_button.setCheckable(True)
-        #self.autostart_button.toggled.connect(self.player.autostart)
+        self.autostart_button = QCheckBox('Autostart')
+        self.autostart_button.toggled.connect(self.autostart)
+        self.autostart_button.setChecked(self.player.autostart)
         # Play / Pause Button
-        self.playpause_button = QPushButton('Play')
+        self.playpause_button = QCheckBox('Play')
         self.playpause_button.setCheckable(True)
         self.playpause_button.toggled.connect(self.playpause)
+        self.playpause_button.setChecked(self.player.play)
         # self.player.setFPS(1)
         self.eject_button = QPushButton('Eject')
         self.eject_button.clicked.connect(self.player.eject)
@@ -52,12 +53,10 @@ class PlayerUI(QWidget):
         self.frameSlider.sliderPressed.connect(self.stop_render)
         self.frameSlider.sliderReleased.connect(self.start_render)
         self.frameSlider.setTickInterval(10)
-        self.frame = QSpinBox()
+        self.frame = QLabel()
         self.frame.setMinimumWidth(60)
-        self.frameSlider.valueChanged.connect(self.frame.setValue)
-        self.frame.valueChanged.connect(self.frameSlider.setValue)
         # new frame from player update slider's value
-        self.player.new_frame.connect(self.updateFrameSlider)
+        self.player.new_frame_index.connect(self.updateFrameUIs)
         # make a nice layout of buttons
         self.control_layout = QGridLayout()
         self.control_layout.addWidget(self.media_bin, 0, 0, 4, 2)
@@ -84,32 +83,30 @@ class PlayerUI(QWidget):
             self.player.timer.stop()
 
 
-    def updateFrameSlider(self):
+    def updateFrameUIs(self, frame):
         if not self.frameSlider.isSliderDown():
-            hasFrames = (self.player.current_frame >= 0)
-
+            hasFrames = (frame >= 0)
             if hasFrames:
                 if self.player.frames > 0:
                     self.frameSlider.setMaximum(self.player.frames - 1)
-                    self.frame.setMaximum(self.player.frames - 1)
-                elif self.player.current_frame > self.frameSlider.maximum():
-                    self.frameSlider.setMaximum(self.player.current_frame)
-                    self.frame.setMaximum(self.player.current_frame)
-
-                self.frameSlider.setValue(self.player.current_frame)
+                elif frame > self.frameSlider.maximum():
+                    self.frameSlider.setMaximum(frame)
+                print('update : ' + str(frame))
+                self.frameSlider.setValue(frame)
             else:
                 self.frameSlider.setMaximum(0)
-                self.frame.setMaximum(0)
             self.frameSlider.setEnabled(hasFrames)
             self.frame.setEnabled(hasFrames)
+        self.frame.setText(str(frame))
 
     def playpause(self, state):
         if state:
-            self.playpause_button.setText('Pause')
             self.player.play = True
         else:
-            self.playpause_button.setText('Play')
             self.player.pause()
+
+    def autostart(self, state):
+        self.player.autostart = state
 
     @property
     def filepath(self):

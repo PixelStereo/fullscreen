@@ -42,7 +42,6 @@ class PlayerUI(QWidget):
         self.playpause_button = QCheckBox('Play')
         self.playpause_button.setCheckable(True)
         self.playpause_button.toggled.connect(self.playpause)
-        self.playpause_button.setChecked(self.player.play)
         # self.player.setFPS(1)
         self.eject_button = QPushButton('Eject')
         self.eject_button.clicked.connect(self.player.eject)
@@ -57,6 +56,7 @@ class PlayerUI(QWidget):
         self.frame.setMinimumWidth(60)
         # new frame from player update slider's value
         self.player.new_frame_index.connect(self.updateFrameUIs)
+        self.player.clear.connect(self.updateFrameUIs)
         # make a nice layout of buttons
         self.control_layout = QGridLayout()
         self.control_layout.addWidget(self.media_bin, 0, 0, 4, 2)
@@ -83,7 +83,7 @@ class PlayerUI(QWidget):
             self.player.timer.stop()
 
 
-    def updateFrameUIs(self, frame):
+    def updateFrameUIs(self, frame=0):
         if not self.frameSlider.isSliderDown():
             hasFrames = (frame >= 0)
             if hasFrames:
@@ -91,7 +91,7 @@ class PlayerUI(QWidget):
                     self.frameSlider.setMaximum(self.player.frames - 1)
                 elif frame > self.frameSlider.maximum():
                     self.frameSlider.setMaximum(frame)
-                print('update : ' + str(frame))
+                self.playpause_button.setChecked(self.player.play)
                 self.frameSlider.setValue(frame)
             else:
                 self.frameSlider.setMaximum(0)

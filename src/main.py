@@ -21,8 +21,8 @@ class MainWindow(QMainWindow):
         self.player = new_player('Player Uno')
         self.window = new_display('Desktop Display', True, self.player)
         self.window = new_display('Second Display', False, self.player)
+        self.window = new_display('Third Display', False, self.player)
         self.window.setEnabled(True)
-        self.window.move(0, 800)
         player_ui = PlayerUI(self.player)
         display_control = DisplaysList(self.window)
         layout = QGridLayout()
@@ -31,8 +31,6 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         widget.setLayout(layout)
         self.setWindowTitle('Video Player')
-        self.move(0, 0)
-        #self.setFixedSize(800, 1000)
         self.setCentralWidget(widget)
         self.show()
 

@@ -18,26 +18,30 @@ class Display(QLabel):
     fullscreen_changed = pyqtSignal(bool)
     freeze_changed = pyqtSignal(bool)
     source_changed = pyqtSignal(int)
-    """docstring for Display"""
+    """
+    QLabel pimped to display video
+    """
     def __init__(self, name=None, active=True, source=None):
         super(Display, self).__init__()
         self.name = name
         self._freeze = False
         self._source = None
         self.source = source
-        self._width = 320
-        self._height = 180
+        self._size = [320, 180]
         self.setMinimumSize(320, 180)
-        #self.setFixedSize(1280, 720)
-        #self.video_frame = QLabel()
-        #self.layout = QVBoxLayout()
-        #self.layout.addWidget(self.video_frame)
-        #self.setLayout(self.layout)
-        #self.video_frame.setAlignment(Qt.AlignCenter)
-        #self.video_frame.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self.setAlignment(Qt.AlignCenter)
+        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self._fullscreen = False
         self.setAlignment(Qt.AlignCenter)
         self.active = active
+
+    def clear(self):
+        self.setPixmap(QPixmap())
+
+    def new_frame(self, pix):
+        if not self.freeze:
+            pix = pix.scaled(self.size(), Qt.KeepAspectRatio)
+            self.setPixmap(pix)
 
     @property
     def source(self):
@@ -55,11 +59,6 @@ class Display(QLabel):
         else:
             self.clear()
 
-    def new_frame(self, pix):
-        if not self.freeze:
-            pix = pix.scaled(self.size(), Qt.KeepAspectRatio)
-            self.setPixmap(pix)
-
     @property
     def fullscreen(self):
         return self._fullscreen
@@ -74,9 +73,6 @@ class Display(QLabel):
             self.fullscreen_changed.emit(state)
             return True
         return False
-
-    def clear(self):
-        self.setPixmap(QPixmap())
 
     @property
     def freeze(self):

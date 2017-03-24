@@ -12,7 +12,7 @@ sys.path.append(svp_path)
 import svp
 from svp.api import new_player, new_display, get_players
 from svp.player_ui import PlayerUI
-from svp.display_control import DisplaysList
+from svp.bins.display_bin import DisplaysList
 
 
 class MainWindow(QMainWindow):
@@ -35,19 +35,15 @@ class MainWindow(QMainWindow):
         self.show()
 
 
-try:
-    # stylesheet
-    import qdarkstyle
-except Exception as error:
-    print('failed ' + str(error))
-
 if __name__ == '__main__':
     import sys
     app = QApplication(sys.argv)
     try:
+        # stylesheet
+        import qdarkstyle
         app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         pass
-    except Exception as error:
-        print('failed ' + str(error))
+    except:
+        pass
     window = MainWindow()
     sys.exit(app.exec_())

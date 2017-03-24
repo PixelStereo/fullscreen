@@ -12,7 +12,7 @@ import os
 from PyQt5.Qt import *
 
 from svp.api import new_display, get_players
-from svp.RangeSlider import QHSpinBoxRangeSlider
+from svp.widgets.RangeSlider import QHSpinBoxRangeSlider
 
 class DisplayUI(QWidget):
     """
@@ -25,7 +25,7 @@ class DisplayUI(QWidget):
         self._display = display
         # active parameter
         self.active = QCheckBox('active')
-        self.active.stateChanged.connect(self.activation)
+        self.active.stateChanged.connect(self.active_changed)
         self.active.setChecked(self._display.active)
         self._display.active_changed.connect(self.active.setChecked)
         # which source to display
@@ -49,8 +49,15 @@ class DisplayUI(QWidget):
         self._display.fullscreen_changed.connect(self.fullscreen.setChecked)
         # width
         self.width = QSpinBox()
+        self.width.valueChanged.connect(self.width_changed)
+        self.width.setMaximum(4096)
+        self.width.setValue(self._display.size().width())
+        self._display.size_changed.connect(self.set_size)
         # height
         self.height = QSpinBox()
+        self.height.setMaximum(4096)
+        self.height.setValue(self._display.size().height())
+        self.height.valueChanged.connect(self.height_changed)
         # set layout
         self.layout = QHBoxLayout()
         self.setLayout(self.layout)
@@ -62,12 +69,18 @@ class DisplayUI(QWidget):
         self.layout.addWidget(self.fullscreen)
         self.show()
 
-    def activation(self, state):
+    def set_size(self, qsize):
+        self.width.setValue(qsize.width())
+        self.height.setValue(qsize.height())
+
+    def active_changed(self, state):
         self._display.active = state
 
-    def size_changed(self, qsize):
-        self._display.width = qsize.width()
-        self._display.height = qsize.height()
+    def width_changed(self, width):
+        self._display.resize(width, self._display.size().height())
+
+    def height_changed(self, height):
+        self._display.resize(self._display.size().width(), height)
 
     def freeze_changed(self, state):
         self._display.freeze = state

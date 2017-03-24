@@ -5,10 +5,6 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-import os,sys
-svp_path = os.path.abspath('..')
-sys.path.append(svp_path)
-
 import svp
 from svp.api import new_player, new_display, get_players
 from svp.player_ui import PlayerUI

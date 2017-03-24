@@ -398,6 +398,7 @@ class QVRangeSlider(QRangeSlider):
 class QSpinBoxRangeSlider(QWidget):
     doubleClick = pyqtSignal(bool)
     rangeChanged = pyqtSignal(float, float)
+    domainChanged = pyqtSignal(float, float)
 
     ## __init__
     #
@@ -478,7 +479,7 @@ class QSpinBoxRangeSlider(QWidget):
             if 0:
                 print(self.min_val, self.max_val)
             self.range_slider.setValues([self.min_val, self.max_val])
-            self.rangeChanged.emit(self.min_val, self.max_val)
+            self.rangeChanged.emit(self.min_spin_box.value(), self.max_spin_box.value())
 
     def range(self):
         return [self.min_spin_box.value(), self.max_spin_box.value()]
@@ -488,16 +489,18 @@ class QSpinBoxRangeSlider(QWidget):
             self.min_spin_box.setValue(min_max_list[0])
             self.max_spin_box.setValue(min_max_list[1])
             return True
+            self.emitRangeChange()
         return False
 
     def domain(self):
-        return [self.min_spin_box.value(), self.max_spin_box.value()]
+        return [self.min_val, self.max_val]
 
     def setDomain(self, min_max_list):
         if min_max_list:
-            self.max_spin_box.setMinimum(min_max_list[0])
-            self.max_spin_box.setMaximum(min_max_list[1])
+            self.min_val = min_max_list[0]
+            self.max_val = min_max_list[1]
             return True
+            self.domainChanged.emit(self.min_val, self.max_val)
         return False
 
     ## handleDoubleClick

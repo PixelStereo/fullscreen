@@ -22,6 +22,7 @@ class Player(QWidget):
         super(QWidget, self).__init__()
         self.name = name
         self._loop = 'repeat'
+        self.frames = 0
         self.filepath = filepath
         self.loop_points = None
         # set openCV capture
@@ -112,6 +113,7 @@ class Player(QWidget):
         return self._loop_points
     @loop_points.setter
     def loop_points(self, points):
+        print(points)
         self._loop_points = points
 
     @property

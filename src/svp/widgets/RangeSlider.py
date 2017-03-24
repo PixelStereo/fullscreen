@@ -500,7 +500,7 @@ class QSpinBoxRangeSlider(QWidget):
             self.min_val = min_max_list[0]
             self.max_val = min_max_list[1]
             return True
-            self.domainChanged.emit(self.min_val, self.max_val)
+            self.domainChanged.emit([self.min_val, self.max_val])
         return False
 
     ## handleDoubleClick

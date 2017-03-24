@@ -36,6 +36,7 @@ class PlayerUI(QWidget):
         # looppoints
         self.looppoints_slider = QHSpinBoxRangeSlider([0, 100, 1], [0, 100])
         self.looppoints_slider.rangeChanged.connect(self.loop_points)
+        self.player.new_load.connect(self.loop_points_changed)
         #setRange setValues
 
         # Play / Pause Button
@@ -121,6 +122,10 @@ class PlayerUI(QWidget):
             self.frame.setEnabled(hasFrames)
         self.frame.setText(str(frame))
 
+    def loop_points_changed(self):
+        self.looppoints_slider.setDomain([0, self.player.frames])
+        self.looppoints_slider.setRange([0, self.player.frames])
+
     def playpause(self, state):
         if state:
             self.player.play = True
@@ -134,6 +139,7 @@ class PlayerUI(QWidget):
         self.player.loop = mode
 
     def loop_points(self, range):
+        print(range)
         self.player.loop_points = range
 
     @property

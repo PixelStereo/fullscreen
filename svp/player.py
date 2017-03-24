@@ -48,18 +48,20 @@ class Player(QWidget):
             img = img.rgbSwapped()
             pix = QPixmap.fromImage(img)
             current_frame = self.cap.get(1)
-            print('render frame : ' + str(current_frame))
+            #print('render frame : ' + str(current_frame))
             # emit the new frame signal
             self.new_frame.emit(pix)
             self.new_frame_index.emit(current_frame)
+            if current_frame == self.frames:
+                print(self.loop)
+                if self.loop == 'repeat':
+                    self.seek(0)
+                elif self.loop == 'one-shot':
+                    self.end_action()
+                else:
+                    self.end_action()
         else:
-            print(self.loop)
-            if self.loop == 'repeat':
-                self.seek(0)
-            elif self.loop == 'one-shot':
-                self.end_action()
-            else:
-                self.end_action()
+            print('nothing to play')
 
     def end_action(self, action='eject'):
         if action == 'loop':
@@ -76,24 +78,27 @@ class Player(QWidget):
             self.cap.release()
         # store filepath
         self.filepath = filepath
-        # open the capture
-        self.cap.open(self.filepath)
-        self.new_load.emit()
-        ret, frame = self.cap.read()
-        if ret:
-            try:
-                # get properties of the movie
-                self.width = self.cap.get(3)
-                self.height = self.cap.get(4)
-                self.frames = self.cap.get(7)
-                self.fps = (self.cap.get(5))
-                self.loop_points = [0, self.frames]
-                print(self.filepath.split('/')[-1], self.fps, self.width, self.height)
-                self.render_frame()
-                if self.autostart:
-                    self.play = True
-            except:
-                print('skip frame')
+        try:
+            # open the capture
+            self.cap.open(self.filepath)
+            self.new_load.emit()
+            ret, frame = self.cap.read()
+            if ret:
+                try:
+                    # get properties of the movie
+                    self.width = self.cap.get(3)
+                    self.height = self.cap.get(4)
+                    self.frames = self.cap.get(7)
+                    self.fps = (self.cap.get(5))
+                    self.loop_points = [0, self.frames]
+                    print(self.filepath.split('/')[-1], self.fps, self.width, self.height)
+                    self.render_frame()
+                    if self.autostart:
+                        self.play = True
+                except:
+                    print('cannot access to the movie')
+        except:
+            print('cannot open the file')
 
     @property
     def loop(self):
@@ -123,7 +128,6 @@ class Player(QWidget):
     def seek(self, frame):
         # check that the frame exists
         if frame <= self.frames:
-            # the frame exists, check if player is running
             # set playhead to the desired frame
             self.cap.set(1, frame)
             # render the frame

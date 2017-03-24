@@ -480,13 +480,25 @@ class QSpinBoxRangeSlider(QWidget):
             self.range_slider.setValues([self.min_val, self.max_val])
             self.rangeChanged.emit(self.min_val, self.max_val)
 
-    ## getValues
-    #
-    # @return [current minimum, current maximum].
-    #
-    def getValues(self):
-        return [self.min_spin_box.value(),
-                self.max_spin_box.value()]
+    def range(self):
+        return [self.min_spin_box.value(), self.max_spin_box.value()]
+
+    def setRange(self, min_max_list):
+        if min_max_list:
+            self.min_spin_box.setValue(min_max_list[0])
+            self.max_spin_box.setValue(min_max_list[1])
+            return True
+        return False
+
+    def domain(self):
+        return [self.min_spin_box.value(), self.max_spin_box.value()]
+
+    def setDomain(self, min_max_list):
+        if min_max_list:
+            self.max_spin_box.setMinimum(min_max_list[0])
+            self.max_spin_box.setMaximum(min_max_list[1])
+            return True
+        return False
 
     ## handleDoubleClick
     #
@@ -589,90 +601,6 @@ class QVSpinBoxRangeSlider(QSpinBoxRangeSlider):
         self.layout.addWidget(self.range_slider)
         self.layout.addWidget(self.min_spin_box)
 
-## QRangeSliderDialog
-#
-# A dialog wrapper around a QRangeSlider
-#
-class QRangeSliderDialog(QDialog):
-    ## __init__
-    #
-    # @param title_text The title of the dialog
-    # @param slider_range The range and increment of the slider [min, max, step size].
-    # @param values The initial [min, max] of the slider
-    # @param Slider type
-    #
-    def __init__(self, parent=None,
-                 title_text = "Range Selection",
-                 slider_range = [0, 10, 1],
-                 values = [0, 10],
-                 slider_type = "horizontal"):
-        QDialog.__init__(self, parent)
-
-        # Update window title
-        self.setWindowTitle(title_text)
-
-        # Create and add QRange Widget
-        if slider_type == "horizontal":
-            self.range_widget = QHSpinBoxRangeSlider(slider_range, values)
-        else:
-            self.range_widget = QVSpinBoxRangeSlider(slider_range, values)
-
-        # Create layout, add widget, and add buttons    
-        layout = QGridLayout()
-        layout.addWidget(self.range_widget, 0,0)
-        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok |
-                                                 QDialogButtonBox.Cancel)
-
-        layout.addWidget(self.button_box, 1, 0)
-        self.setLayout(layout)
-        
-        # Connect buttons
-        self.button_box.accepted.connect(self.accept)
-        self.button_box.rejected.connect(self.reject)
-        
-    # getValues
-    #
-    # Return the current range values
-    #
-    def getValues(self):
-        return self.range_widget.getValues()
-   
-#
-# Testing
-#
-
-if __name__ == "__main__":
-    class Parameters:
-        def __init__(self):
-            self.x_pixels = 200
-            self.y_pixels = 200
-
-    app = QApplication(sys.argv)
-    if 0:
-        hslider = QHRangeSlider(slider_range = [-5.0, 5.0, 0.5], values = [-2.5, 2.5])
-        hslider.setEmitWhileMoving(True)
-        hslider.show()
-    if 0:
-        vslider = QVRangeSlider(slider_range = [-5.0, 5.0, 0.5], values = [-2.5, 2.5])
-        vslider.setEmitWhileMoving(True)
-        vslider.show()
-    if 0:
-        dhslider = QHSpinBoxRangeSlider(slider_range = [-5.0, 5.0, 0.5], values = [-2.5, 2.5])
-        dhslider.setEmitWhileMoving(True)
-        dhslider.show()
-    if 0:
-        dhslider = QVSpinBoxRangeSlider(slider_range = [-10, 10, 0.5], values = [-2, 2])
-        dhslider.setEmitWhileMoving(True)
-        dhslider.show()        
-    if 1:
-        dialog = QRangeSliderDialog(title_text = "Range Slider",
-                                    slider_range = [-10,10,0.5],
-                                    values = [-5, 5])
-        if dialog.exec_():
-            print(dialog.getValues())
-
-    sys.exit(app.exec_())
-
 
 #
 # The MIT License
@@ -697,4 +625,3 @@ if __name__ == "__main__":
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
-

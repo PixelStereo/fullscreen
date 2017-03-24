@@ -12,18 +12,19 @@ sys.path.append(svp_path)
 import svp
 from svp.api import new_player, new_display, get_players
 from svp.player_ui import PlayerUI
-from svp.display_control import DisplayControl
+from svp.display_control import DisplaysList
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.player = new_player('Player Uno')
-        self.window = new_display('Desktop Display', False, self.player)
+        self.window = new_display('Desktop Display', True, self.player)
+        self.window = new_display('Second Display', False, self.player)
         self.window.setEnabled(True)
         self.window.move(0, 800)
         player_ui = PlayerUI(self.player)
-        display_control = DisplayControl(self.window)
+        display_control = DisplaysList(self.window)
         layout = QGridLayout()
         layout.addWidget(player_ui, 0, 0)
         layout.addWidget(display_control, 1, 0)

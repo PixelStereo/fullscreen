@@ -5,7 +5,7 @@
 Player Class
 """
 
-from PyQt5.QtWidgets import QListWidget, QWidget, QLabel, QPushButton, QGridLayout, QGroupBox, QHBoxLayout
+from PyQt5.QtWidgets import QListWidget, QWidget, QLabel, QPushButton, QGridLayout, QGroupBox, QHBoxLayout, QListWidgetItem
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
 import os
@@ -27,20 +27,17 @@ class PlayerUI(QWidget):
         # What are these 2 lines?
         #self.player.setParent(self)
         #self.player.setWindowFlags(Qt.Tool)
-        # create an embeded preview window 
-        self.preview = new_display('Preview', True, self.player)
         # filepath UI
         self.filepath_label = QLabel(self.player.filepath)
-        # Mute Button
-        self.mute_button = QPushButton('Black')
-        self.mute_button.setCheckable(True)
-        self.mute_button.toggled.connect(self.preview.mute)
         # Autostart
         self.autostart_button = QCheckBox('Autostart')
         self.autostart_button.toggled.connect(self.autostart)
         self.autostart_button.setChecked(self.player.autostart)
         # looppoints
         self.looppoints_slider = QHSpinBoxRangeSlider([0, 100, 1], [0, 100])
+        self.looppoints_slider.rangeChanged.connect(self.loop_points)
+        #setRange setValues
+
         # Play / Pause Button
         self.playpause_button = QCheckBox('Play')
         self.playpause_button.setCheckable(True)
@@ -88,7 +85,6 @@ class PlayerUI(QWidget):
         # General Layout
         self.general_layout = QHBoxLayout()
         self.general_layout.addWidget(self.control)
-        self.general_layout.addWidget(self.preview)
         self.setLayout(self.general_layout)
         self.media_bin.refresh()
 
@@ -104,19 +100,22 @@ class PlayerUI(QWidget):
         if self.player.play:
             self.player.timer.stop()
 
-
     def updateFrameUIs(self, frame=0):
         if not self.frameSlider.isSliderDown():
             hasFrames = (frame >= 0)
             if hasFrames:
                 if self.player.frames > 0:
                     self.frameSlider.setMaximum(self.player.frames - 1)
+                    self.looppoints_slider.setRange([0, self.player.frames - 1])
                 elif frame > self.frameSlider.maximum():
-                    self.frameSlider.setMaximum(frame)
+                    self.frameSlider.setMaximum([0, frame])
+                    self.looppoints_slider.setRange(frame)
                 self.playpause_button.setChecked(self.player.play)
                 self.frameSlider.setValue(frame)
             else:
                 self.frameSlider.setMaximum(0)
+                self.looppoints_slider.setRange([0, 0])
+            self.looppoints_slider.setEnabled(hasFrames)
             self.frameSlider.setEnabled(hasFrames)
             self.frame.setEnabled(hasFrames)
         self.frame.setText(str(frame))
@@ -133,6 +132,9 @@ class PlayerUI(QWidget):
     def loop(self, mode):
         self.player.loop = mode
 
+    def loop_points(self, range):
+        self.player.loop_points = range
+
     @property
     def filepath(self):
         return self.player.filepath
@@ -143,7 +145,6 @@ class PlayerUI(QWidget):
     def load(self, filepath):
         self.filepath_label.setText(filepath)
         self.player.load(filepath)
-
 
 class MediaBin(QListWidget):
     """docstring for MediaBin"""

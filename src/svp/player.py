@@ -82,7 +82,6 @@ class Player(QWidget):
         try:
             # open the capture
             self.cap.open(self.filepath)
-            self.new_load.emit()
             ret, frame = self.cap.read()
             if ret:
                 try:
@@ -96,6 +95,7 @@ class Player(QWidget):
                     self.render_frame()
                     if self.autostart:
                         self.play = True
+                    self.new_load.emit()
                 except:
                     print('cannot access to the movie')
         except:

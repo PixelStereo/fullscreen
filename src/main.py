@@ -6,7 +6,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 import svp
-from svp.api import new_player, new_display, get_players
+from svp.api import new_player, new_display, get_players, new_smart_player
 from svp.player_ui import PlayerUI
 from svp.bins.display_bin import DisplaysList
 from svp.bins.media_bin import MediaBin
@@ -15,13 +15,11 @@ from svp.bins.media_bin import MediaBin
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        player = new_player('Player Uno', '/Users/reno/Dropbox/media/cloudy.mov')
-        player2 = new_player('Player Dos', '/Users/reno/Dropbox/media/galets.mov')
-        window = new_display(name='Desktop Display', active=True, source=player)
-        window2 = new_display(name='Second Display', active=True, source=player2)
+        player = new_smart_player('Ein Smart Player', '/Users/reno/Dropbox/media/cloudy.mov')
+        window = new_display(name='Desktop Display', active=True, source=player, mode='GL')
         window.setEnabled(True)
         player_ui = PlayerUI(player)
-        player2_ui = PlayerUI(player2)
+        #player2_ui = PlayerUI(player2)
         """
         MEDIA BIN
 
@@ -40,7 +38,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(media_bin, 0, 0, 6, 6)
         """
         layout.addWidget(player_ui, 0, 7, 2, 2)
-        layout.addWidget(player2_ui, 3, 7, 2, 2)
+        #layout.addWidget(player2_ui, 3, 7, 2, 2)
         layout.addWidget(display_control, 0, 9, 6, 6)
         widget = QWidget()
         widget.setLayout(layout)

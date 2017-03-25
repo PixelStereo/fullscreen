@@ -7,7 +7,7 @@ Player Class
 
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import QTimer
-from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtGui import QImage, QPixmap, QColor
 import cv2
 from PyQt5.QtCore import pyqtSignal
 
@@ -35,6 +35,8 @@ class Player(QWidget):
         #self.filepath = filepath
         if filepath:
             self.load(filepath)
+        else:
+            self.filepath = None
 
     def __repr__(self):
         return self.name
@@ -180,3 +182,17 @@ class Player(QWidget):
         self.cap.release()
         self.pause()
         self.clear.emit()
+
+class SmartPlayer(Player):
+    """docstring for SmartPlayer"""
+    def __init__(self, *args, **kwargs):
+        super(SmartPlayer, self).__init__(*args, **kwargs)
+        #self._foreground = QPixmap()
+        #self._foreground.fill(QColor(0, 146, 206))
+        #self._foreground.setAlpha(127)
+
+    def fade_to_black(self, duration):
+        """
+        fade to black in a certain time
+        """
+        self

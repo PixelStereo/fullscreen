@@ -40,8 +40,14 @@ class Display(QLabel):
 
     def new_frame(self, pix):
         if not self.freeze:
+            # scale the QPixmap to the display size (pixels)
+            # todo : give  modes for fillin / keep ratio etc…
             pix = pix.scaled(self.size(), Qt.KeepAspectRatio)
-            self.setPixmap(pix)
+            painter = QPainter(pix)
+            painter.setOpacity(0.2)
+            painter.drawPixmap(0, 0, pix)
+            painter.end()
+            #self.setPixmap(pix)
 
     @property
     def source(self):

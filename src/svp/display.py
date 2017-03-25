@@ -49,8 +49,11 @@ class Display(QLabel):
     @source.setter
     def source(self, source):
         if self._source:
-            self._source.new_frame.disconnect(self.new_frame)
-            self._source.clear.disconnect(self.clear)
+            try:
+                self._source.new_frame.disconnect(self.new_frame)
+                self._source.clear.disconnect(self.clear)
+            except:
+                pass
         self._source = source
         self.source_changed.emit(source)
         if source:

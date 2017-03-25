@@ -21,7 +21,7 @@ def get_screens():
 
 class DisplaysList(QListWidget):
     """docstring for MediaBin"""
-    def __init__(self, player):
+    def __init__(self):
         super(DisplaysList, self).__init__()
         self.selected = None
         for display in get_displays():
@@ -31,6 +31,7 @@ class DisplaysList(QListWidget):
             self.addItem(item)
             self.setItemWidget(item, disp)
             self.setAlternatingRowColors(True)
+            self.setMinimumWidth(600)
 
     def selection_changed(self):
         if self.selectedItems():

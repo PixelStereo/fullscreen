@@ -54,13 +54,13 @@ class Display(QLabel):
                 self._source.clear.disconnect(self.clear)
             except:
                 pass
+            if source:
+                self._source.new_frame.connect(self.new_frame)
+                self._source.clear.connect(self.clear)
+            else:
+                self.clear()
         self._source = source
         self.source_changed.emit(source)
-        if source:
-            self._source.new_frame.connect(self.new_frame)
-            self._source.clear.connect(self.clear)
-        else:
-            self.clear()
 
     @property
     def fullscreen(self):

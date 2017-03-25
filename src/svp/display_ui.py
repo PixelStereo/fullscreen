@@ -89,8 +89,8 @@ class DisplayUI(QWidget):
         self._display.fullscreen = state
 
     def source_changed(self, index):
-        print('source changed : ', index)
-        if index == 0:
+        print('source changed : ', self._display.name, index)
+        if index in [0, -1]:
             source = None
         else:
             index -= 1

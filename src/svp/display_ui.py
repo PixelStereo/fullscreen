@@ -34,7 +34,7 @@ class DisplayUI(QWidget):
         self.sources.addItem('No Source')
         self.sources.currentIndexChanged.connect(self.source_changed)
         self.sources.setCurrentIndex(get_players().index(self._display.source))
-        self._display.source_changed.connect(self.sources.setCurrentIndex)
+        #self._display.source_changed.connect(self.sources.setCurrentIndex)
         for source in get_players():
             self.sources.addItem(source.name)
         # freeze
@@ -89,9 +89,11 @@ class DisplayUI(QWidget):
         self._display.fullscreen = state
 
     def source_changed(self, index):
+        print('source changed : ', index)
         if index == 0:
             source = None
         else:
             index -= 1
             source = get_players()[index]
+        print('source changed LAST : ', source)
         self._display.source = source

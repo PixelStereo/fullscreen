@@ -23,7 +23,6 @@ class Player(QWidget):
         self.name = name
         self._loop = 'repeat'
         self.frames = 0
-        self.filepath = filepath
         self.loop_points = None
         # set openCV capture
         self.cap = cv2.VideoCapture()
@@ -33,6 +32,12 @@ class Player(QWidget):
         self.fps = 25
         self._play = False
         self.timer.timeout.connect(self.render_frame)
+        #self.filepath = filepath
+        if filepath:
+            self.load(filepath)
+
+    def __repr__(self):
+        return self.name
 
     @property
     def fps(self):
@@ -113,7 +118,7 @@ class Player(QWidget):
         return self._loop_points
     @loop_points.setter
     def loop_points(self, points):
-        print(points)
+        print('loop_point setter : ', points)
         self._loop_points = points
 
     @property

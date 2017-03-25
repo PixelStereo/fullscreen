@@ -395,7 +395,7 @@ class QVRangeSlider(QRangeSlider):
 #
 # Range slider with two double spin boxes super class.
 #
-class QSpinBoxRangeSlider(QWidget):
+class QSpinBoxRangeSlider(QGroupBox):
     doubleClick = pyqtSignal(bool)
     rangeChanged = pyqtSignal(float, float)
     domainChanged = pyqtSignal(float, float)

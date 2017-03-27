@@ -13,6 +13,10 @@ from PyQt5.QtCore import QSize
 
 
 class Display(QLabel):
+    """
+    QLabel pimped to display video
+    """
+    # signals emited by this class instances
     size_changed = pyqtSignal(QSize)
     active_changed = pyqtSignal(bool)
     fullscreen_changed = pyqtSignal(bool)
@@ -20,9 +24,7 @@ class Display(QLabel):
     source_changed = pyqtSignal(int)
     # create a list for all displays
     __displays__ = []
-    """
-    QLabel pimped to display video
-    """
+    # initialisation of each instances
     def __init__(self, name=None, active=True, source=None):
         super(Display, self).__init__()
         self.name = name
@@ -43,26 +45,24 @@ class Display(QLabel):
     def clear(self):
         self.setPixmap(QPixmap())
 
+    def paintEvent(self,event):
+        QLabel.paintEvent(self, event)
+        painter = QPainter(self)
+        rect = self.geometry()
+        x = rect.width()/3
+        y = rect.height()/2
+        painter.setPen(QPen(Qt.red))
+        painter.drawText(QPoint(x,y), self.name)
+        painter.setPen(QPen(Qt.white))
+        painter.drawLine(self.rect().topLeft(),self.rect().bottomRight())
+        painter.drawLine(self.rect().bottomLeft(),self.rect().topRight())
+
     def new_frame(self, pix):
         if not self.freeze:
             # scale the QPixmap to the display size (pixels)
             # todo : give  modes for fillin / keep ratio etc…
             pix = pix.scaled(self.size(), Qt.KeepAspectRatio)
-            #self.setPixmap(pix)
-            painter = QPainter(pix)
-            rect = painter.viewport()
-            painter.setOpacity(0.5)
-            #painter.setPen(Qt.NoPen)
-            #Qt.TransparentMode
-            #painter.setBrush(QColor(0, 222, 0, 222))
-            #size = pix.size()
-            #size.scale(rect.size(), Qt.KeepAspectRatio)
-            painter.setViewport(0, 222, 322, 123)
-            #painter.setWindow(self.rect())
-            #painter.drawPixmap(0, 0, 222, 333, self.pixmap())
-            painter.drawPixmap(0, 0, 222, 333, pix)
-            painter.end()
-
+            self.setPixmap(pix)
 
     @property
     def source(self):

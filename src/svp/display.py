@@ -48,15 +48,19 @@ class Display(QLabel):
             # scale the QPixmap to the display size (pixels)
             # todo : give  modes for fillin / keep ratio etc…
             pix = pix.scaled(self.size(), Qt.KeepAspectRatio)
+            #self.setPixmap(pix)
             painter = QPainter(pix)
             rect = painter.viewport()
-            painter.setOpacity(0.0)
-            self.setPixmap(pix)
-            size = pix.size()
-            size.scale(rect.size(), Qt.KeepAspectRatio)
-            painter.setViewport(rect.x(), rect.y(), size.width(), size.height())
-            painter.setWindow(self.pixmap().rect())
-            painter.drawPixmap(0, 0, self.pixmap())
+            painter.setOpacity(0.5)
+            #painter.setPen(Qt.NoPen)
+            #Qt.TransparentMode
+            #painter.setBrush(QColor(0, 222, 0, 222))
+            #size = pix.size()
+            #size.scale(rect.size(), Qt.KeepAspectRatio)
+            painter.setViewport(0, 222, 322, 123)
+            #painter.setWindow(self.rect())
+            #painter.drawPixmap(0, 0, 222, 333, self.pixmap())
+            painter.drawPixmap(0, 0, 222, 333, pix)
             painter.end()
 
 

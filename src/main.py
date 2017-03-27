@@ -10,14 +10,17 @@ from svp.player_ui import PlayerUI
 from svp.player import SmartPlayer, Player
 from svp.display import Display
 from svp.bins.display_bin import DisplaysList
+from svp.bins.player_bin import PlayersList
 from svp.bins.media_bin import MediaBin
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        player = Player(name='Ein Smart Player', filepath='/Users/reno/Dropbox/media/cloudy.mov')
+        player = Player(name='Ein Player', filepath='/Users/reno/Dropbox/media/cloudy.mov')
+        player2 = Player(name='Second Player', filepath='/Users/reno/Dropbox/media/galets.mov')
         window = Display(name='Desktop Display', active=True, source=player)
+        window2 = Display(name='Second Display', active=True, source=player2)
         player_ui = PlayerUI(player)
         #player2_ui = PlayerUI(player2)
         """
@@ -31,14 +34,14 @@ class MainWindow(QMainWindow):
         self.player2.clear.connect(media_bin.clearSelection)
         """
         display_control = DisplaysList()
+        player_control = PlayersList()
         layout = QGridLayout()
         """
         MEDIA BIN
 
         layout.addWidget(media_bin, 0, 0, 6, 6)
         """
-        layout.addWidget(player_ui, 0, 7, 2, 2)
-        #layout.addWidget(player2_ui, 3, 7, 2, 2)
+        layout.addWidget(player_control, 0, 7, 2, 2)
         layout.addWidget(display_control, 0, 9, 6, 6)
         widget = QWidget()
         widget.setLayout(layout)

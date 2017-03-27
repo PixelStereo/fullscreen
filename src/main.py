@@ -8,6 +8,7 @@ from PyQt5.QtGui import *
 import svp
 from svp.api import new_player, new_display, get_players
 from svp.player_ui import PlayerUI
+from svp.display import Display
 from svp.bins.display_bin import DisplaysList
 from svp.bins.media_bin import MediaBin
 
@@ -17,9 +18,8 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         player = new_player('Player Uno', '/Users/reno/Dropbox/media/cloudy.mov')
         player2 = new_player('Player Dos', '/Users/reno/Dropbox/media/galets.mov')
-        window = new_display('Desktop Display', True, player)
-        window2 = new_display('Second Display', True, player2)
-        window.setEnabled(True)
+        window = Display('First Display', active=True, source=player)
+        window2 = Display('Second Display', active=True, source=player2)
         player_ui = PlayerUI(player)
         player2_ui = PlayerUI(player2)
         """

@@ -33,10 +33,11 @@ class DisplayUI(QWidget):
         self.sources.setMinimumWidth = 150
         self.sources.addItem('No Source')
         self.sources.currentIndexChanged.connect(self.source_changed)
-        self.sources.setCurrentIndex(get_players().index(self._display.source))
-        #self._display.source_changed.connect(self.sources.setCurrentIndex)
         for source in get_players():
             self.sources.addItem(source.name)
+        source = get_players().index(self._display.source)
+        self.sources.setCurrentIndex(source + 1)
+        #self._display.source_changed.connect(self.sources.setCurrentIndex)
         # freeze
         self.freeze = QCheckBox('freeze')
         self.freeze.stateChanged.connect(self.freeze_changed)

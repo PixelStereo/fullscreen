@@ -3,11 +3,18 @@
 
 """
 svp module access is done by 
-import api
-get_players() / add_player / remove_player
-get_displays() / add_display / remove_display
+
+import svp
+get_players() / remove_player
+get_displays() / remove_display
+
 """
 
+__displays__ = Display.__displays__
+__displays__ = Display.__displays__
 
-__players__ = []
-__displays__ = []
+def get_players():
+	return __players__
+
+def get_displays():
+	return __displays__

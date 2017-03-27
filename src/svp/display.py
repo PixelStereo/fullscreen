@@ -18,6 +18,8 @@ class Display(QLabel):
     fullscreen_changed = pyqtSignal(bool)
     freeze_changed = pyqtSignal(bool)
     source_changed = pyqtSignal(int)
+    # create a list for all displays
+    __displays__ = []
     """
     QLabel pimped to display video
     """
@@ -34,6 +36,9 @@ class Display(QLabel):
         self._fullscreen = False
         self.setAlignment(Qt.AlignCenter)
         self.active = active
+        self.__displays__.append(self)
+        pos = len(self.__displays__)
+        self.move(0, pos*300)
 
     def clear(self):
         self.setPixmap(QPixmap())

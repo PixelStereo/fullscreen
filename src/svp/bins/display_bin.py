@@ -11,7 +11,7 @@ from PyQt5.QtGui import QImage, QPixmap
 import os
 from PyQt5.Qt import *
 
-from svp.api import get_displays, get_players
+from svp import get_displays, get_players
 from svp.display_ui import DisplayUI
 
 def get_screens():

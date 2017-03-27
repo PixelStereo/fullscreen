@@ -11,7 +11,6 @@ from PyQt5.QtGui import QImage, QPixmap
 import os
 from PyQt5.Qt import *
 
-from svp.api import new_display
 from svp.widgets.RangeSlider import QHSpinBoxRangeSlider
 
 class PlayerUI(QGroupBox):

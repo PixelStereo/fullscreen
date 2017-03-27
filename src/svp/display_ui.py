@@ -11,7 +11,7 @@ from PyQt5.QtGui import QImage, QPixmap, QStandardItemModel
 import os
 from PyQt5.Qt import *
 
-from svp.api import new_display, get_players
+from svp import get_players
 from svp.widgets.RangeSlider import QHSpinBoxRangeSlider
 
 class DisplayUI(QWidget):
@@ -90,8 +90,8 @@ class DisplayUI(QWidget):
         self._display.fullscreen = state
 
     def source_changed(self, index):
-        print('source changed : ', index)
-        if index == 0:
+        print('source changed : ', self._display.name, index)
+        if index in [0, -1]:
             source = None
         else:
             index -= 1

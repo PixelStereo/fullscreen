@@ -10,7 +10,10 @@ get_displays() / remove_display
 
 """
 
-__displays__ = Display.__displays__
+from svp.display import Display
+from svp.player import Player
+
+__players__ = Player.__players__
 __displays__ = Display.__displays__
 
 def get_players():

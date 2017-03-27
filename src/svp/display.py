@@ -45,8 +45,20 @@ class Display(QLabel):
 
     def new_frame(self, pix):
         if not self.freeze:
+            # scale the QPixmap to the display size (pixels)
+            # todo : give  modes for fillin / keep ratio etc…
             pix = pix.scaled(self.size(), Qt.KeepAspectRatio)
+            painter = QPainter(pix)
+            rect = painter.viewport()
+            painter.setOpacity(0.0)
             self.setPixmap(pix)
+            size = pix.size()
+            size.scale(rect.size(), Qt.KeepAspectRatio)
+            painter.setViewport(rect.x(), rect.y(), size.width(), size.height())
+            painter.setWindow(self.pixmap().rect())
+            painter.drawPixmap(0, 0, self.pixmap())
+            painter.end()
+
 
     @property
     def source(self):
@@ -59,13 +71,13 @@ class Display(QLabel):
                 self._source.clear.disconnect(self.clear)
             except:
                 pass
+            if source:
+                self._source.new_frame.connect(self.new_frame)
+                self._source.clear.connect(self.clear)
+            else:
+                self.clear()
         self._source = source
         self.source_changed.emit(source)
-        if source:
-            self._source.new_frame.connect(self.new_frame)
-            self._source.clear.connect(self.clear)
-        else:
-            self.clear()
 
     @property
     def fullscreen(self):

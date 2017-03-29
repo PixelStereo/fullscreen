@@ -23,12 +23,12 @@ class PlayersList(QListWidget):
         for player in get_players():
             item = QListWidgetItem()
             play = PlayerUI(player)
-            item.setSizeHint(QSize(250, 210))
+            item.setSizeHint(QSize(100, 210))
             self.addItem(item)
             self.setItemWidget(item, play)
             self.setAlternatingRowColors(True)
-            self.setMinimumWidth(450)
-            self.setMinimumHeight(600)
+            self.setMinimumWidth(400)
+            self.setMinimumHeight(500)
 
     def selection_changed(self):
         if self.selectedItems():

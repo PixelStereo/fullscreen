@@ -14,11 +14,11 @@ from PyQt5.Qt import *
 from svp import get_players
 from svp.widgets.RangeSlider import QHSpinBoxRangeSlider
 
-class DisplayUI(QWidget):
+class LayerUI(QWidget):
     """
     """
     def __init__(self, display):
-        super(DisplayUI, self).__init__()
+        super(LayerUI, self).__init__()
         # initalise selection
         self.selected = None
         # the display model connected to
@@ -43,11 +43,6 @@ class DisplayUI(QWidget):
         self.freeze.stateChanged.connect(self.freeze_changed)
         self.freeze.setChecked(self._display.freeze)
         self._display.freeze_changed.connect(self.freeze.setChecked)
-        # fullscreen mode
-        self.fullscreen = QCheckBox('Fullscreen')
-        self.fullscreen.stateChanged.connect(self.fullscreen_changed)
-        self.fullscreen.setChecked(self._display.fullscreen)
-        self._display.fullscreen_changed.connect(self.fullscreen.setChecked)
         # width
         self.width = QSpinBox()
         self.width.valueChanged.connect(self.width_changed)
@@ -67,7 +62,6 @@ class DisplayUI(QWidget):
         self.layout.addWidget(self.freeze)
         self.layout.addWidget(self.width)
         self.layout.addWidget(self.height)
-        self.layout.addWidget(self.fullscreen)
         self.show()
 
     def set_size(self, qsize):
@@ -85,9 +79,6 @@ class DisplayUI(QWidget):
 
     def freeze_changed(self, state):
         self._display.freeze = state
-
-    def fullscreen_changed(self, state):
-        self._display.fullscreen = state
 
     def source_changed(self, index):
         print('source changed : ', self._display.name, index)

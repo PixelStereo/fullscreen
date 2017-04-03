@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (QApplication, QGraphicsAnchorLayout,
         QPushButton, QSizePolicy, QWidget, QVBoxLayout, QLabel, QSizePolicy, 
         QGraphicsOpacityEffect)
 
-from PyQt5.QtGui import QPixmap, QColor, QSurface
+from PyQt5.QtGui import QPixmap, QColor, QSurface, QImage
 from PyQt5.Qt import *
 from PyQt5.QtCore import QSize, QEasingCurve, QSizeF, Qt
 
@@ -31,6 +31,7 @@ class Layer(QLabel):
     # signals emited by this class instances
     size_changed = pyqtSignal(QSize)
     active_changed = pyqtSignal(bool)
+    new_pix = pyqtSignal(QImage)
     fullscreen_changed = pyqtSignal(bool)
     freeze_changed = pyqtSignal(bool)
     source_changed = pyqtSignal(int)
@@ -102,6 +103,7 @@ class Layer(QLabel):
             painter.fillRect( QRectF(0, 0, rect.width()-100, rect.width()-100), brush)
             painter.setOpacity(1)
             painter.end()
+            self.new_pix.emit(pix.toImage())
             # try fade in
 
             self.setPixmap(pix)

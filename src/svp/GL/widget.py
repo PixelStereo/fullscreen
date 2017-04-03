@@ -97,10 +97,8 @@ void main(void)
         self.program.bindAttributeLocation('texCoord',
                 self.PROGRAM_TEXCOORD_ATTRIBUTE)
         self.program.link()
-
         self.program.bind()
         self.program.setUniformValue('texture', 0)
-
         self.program.enableAttributeArray(self.PROGRAM_VERTEX_ATTRIBUTE)
         self.program.enableAttributeArray(self.PROGRAM_TEXCOORD_ATTRIBUTE)
         self.program.setAttributeArray(self.PROGRAM_VERTEX_ATTRIBUTE,
@@ -142,3 +140,4 @@ void main(void)
         self.texCoords = [(True, True), (False, True), (False, False), (True, False)]
         self.vertices = [(0.5, -0.5, -0.5), (-0.5, -0.5, -0.5), (-0.5, 0.5, -0.5), (0.5, 0.5, -0.5)]
         self.texture = QOpenGLTexture(image.mirrored())
+        self.update()

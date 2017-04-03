@@ -24,23 +24,30 @@ class MainWindow(QMainWindow):
         layer = Layer(name='Desktop Display', active=True, source=player)
         layer2 = Layer(name='Second Display', active=True, source=player2)
         window = Window(name='First Window', active=True, layers=[layer, layer2])
-        displays = LayersList()
-        players = PlayersList()
-        windows = WindowsList()
-        layout = QGridLayout()
-
+        player.new_frame.connect(window.glwidget.paintGL)
+        player.new_image.connect(window.makeObject)
+        player_ui = PlayerUI(player)
+        #player2_ui = PlayerUI(player2)
         """
         MEDIA BIN
+
         media_bin = MediaBin('/Users/reno/Dropbox')
         # create a media_bin
         media_bin.selection.connect(self.player.load)
         media_bin.selection.connect(self.player2.load)
         self.player.clear.connect(media_bin.clearSelection)
         self.player2.clear.connect(media_bin.clearSelection)
-        
+        """
+        displays = LayersList()
+        players = PlayersList()
+        windows = WindowsList()
+        layout = QGridLayout()
+
+        """
+        MEDIA BIN 
+
         layout.addWidget(media_bin, 0, 0, 6, 6)
         """
-
         layout.addWidget(players, 0, 7, 2, 2)
         layout.addWidget(displays, 0, 9, 6, 6)
         layout.addWidget(windows, 0, 15, 6, 6)

@@ -16,7 +16,6 @@ from PyQt5.QtCore import QSize, QEasingCurve, QSizeF, Qt
 
 from svp.GL.widget import GLWidget
 
-
 class Window(QWidget):
     """
     QLabel pimped to display video
@@ -42,6 +41,7 @@ class Window(QWidget):
             self._layers = []
         else:
             self._layers = layers
+
         self._freeze = False
         self._size = [640, 480]
         """
@@ -58,7 +58,7 @@ class Window(QWidget):
         # Display Properties
         self._display_name = True
         """
-
+        self.move(700, 0)
 
         self.__windows__.append(self)
         self.glWidgets = []
@@ -74,7 +74,13 @@ class Window(QWidget):
 
         timer = QTimer(self)
         timer.start(20)
+
         self.setWindowTitle(name)
+
+
+        for layer in self.layers:
+            layer.new_pix.connect(self.makeObject)
+
 
     def makeObject(self, image):
         self.glwidget.makeObject(image)

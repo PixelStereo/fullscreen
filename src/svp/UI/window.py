@@ -61,7 +61,7 @@ class WindowUI(QWidget):
         self.layout.addWidget(self.width)
         self.layout.addWidget(self.height)
         self.layout.addWidget(self.fullscreen)
-        self.show()
+
 
     def set_size(self, qsize):
         self.width.setValue(qsize.width())

@@ -19,8 +19,8 @@ from svp.UI.media_bin import MediaBin
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        player = Player(name='Ein Player', filepath='/Users/reno/Dropbox/media/cloudy.mov')
-        player2 = Player(name='Second Player', filepath='/Users/reno/Dropbox/media/galets.mov')
+        player = Player(name='Ein Player', filepath='/Users/reno/Library/Mobile Documents/com~apple~CloudDocs/Media/Video/Photo Jpeg/cloudy.mov')
+        player2 = Player(name='Second Player', filepath='/Users/reno/Library/Mobile Documents/com~apple~CloudDocs/Media/Video/Photo Jpeg/galets.mov')
         layer = Layer(name='Desktop Display', active=True, source=player)
         layer2 = Layer(name='Second Display', active=True, source=player2)
         window = Window(name='First Window', active=True, layers=[layer, layer2])

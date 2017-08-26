@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QOpenGLWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QGridLayout, QWidget, QOpenGLWidget, QGroupBox
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
@@ -24,9 +24,9 @@ class MainWindow(QMainWindow):
         layer = Layer(name='Desktop Display', active=True, source=player)
         layer2 = Layer(name='Second Display', active=True, source=player2)
         window = Window(name='First Window', active=True, layers=[layer, layer2])
-        displays = LayersList()
-        players = PlayersList()
-        windows = WindowsList()
+        layer_list = LayersList()
+        player_list = PlayersList()
+        window_list = WindowsList()
         layout = QGridLayout()
 
         """
@@ -40,9 +40,20 @@ class MainWindow(QMainWindow):
         
         layout.addWidget(media_bin, 0, 0, 6, 6)
         """
-
+        players = QGroupBox('Players')
+        layers = QGroupBox('Layers')
+        windows = QGroupBox('Windows')
+        players_layout = QGridLayout()
+        players_layout.addWidget(player_list)
+        players.setLayout(players_layout)
+        layers_layout = QGridLayout()
+        layers_layout.addWidget(layer_list)
+        layers.setLayout(layers_layout)
+        windows_layout = QGridLayout()
+        windows_layout.addWidget(window_list)
+        windows.setLayout(windows_layout)
         layout.addWidget(players, 0, 7, 2, 2)
-        layout.addWidget(displays, 0, 9, 6, 6)
+        layout.addWidget(layers, 0, 9, 6, 6)
         layout.addWidget(windows, 0, 15, 6, 6)
         widget = QWidget()
         widget.setLayout(layout)

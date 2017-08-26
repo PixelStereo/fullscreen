@@ -20,7 +20,9 @@ def get_screens():
 
 
 class LayersList(QListWidget):
-    """docstring for MediaBin"""
+    """
+    A layer list is a list of all layers of the project
+    """
     def __init__(self):
         super(LayersList, self).__init__()
         self.selected = None

@@ -28,7 +28,6 @@ class MainWindow(QMainWindow):
         player_list = PlayersList()
         window_list = WindowsList()
         layout = QGridLayout()
-
         """
         MEDIA BIN
         media_bin = MediaBin('/Users/reno/Dropbox')

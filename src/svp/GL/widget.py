@@ -77,7 +77,7 @@ void main(void)
     def initializeGL(self):
         self.gl = self.context().versionFunctions()
         self.gl.initializeOpenGLFunctions()
-
+        
         self.makeObject(QImage('/Users/reno/Library/Mobile Documents/com~apple~CloudDocs/Media/Images/testcard.png'))
 
         self.gl.glEnable(self.gl.GL_DEPTH_TEST)

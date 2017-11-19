@@ -11,27 +11,24 @@ from PyQt5.QtGui import QImage, QPixmap
 import os
 from PyQt5.Qt import *
 
-from svp import get_displays, get_players
-from svp.display_ui import DisplayUI
+from svp import get_players
 
-def get_screens():
-    for screen in QApplication.instance() .screens():
-        print(screen.name(), screen.size())
+from svp.UI.player import PlayerUI
 
-
-class DisplaysList(QListWidget):
+class PlayersList(QListWidget):
     """docstring for MediaBin"""
     def __init__(self):
-        super(DisplaysList, self).__init__()
+        super(PlayersList, self).__init__()
         self.selected = None
-        for display in get_displays():
+        for player in get_players():
             item = QListWidgetItem()
-            disp = DisplayUI(display)
-            item.setSizeHint(QSize(250, 60))
+            play = PlayerUI(player)
+            item.setSizeHint(QSize(100, 210))
             self.addItem(item)
-            self.setItemWidget(item, disp)
+            self.setItemWidget(item, play)
             self.setAlternatingRowColors(True)
-            self.setMinimumWidth(600)
+            self.setMinimumWidth(400)
+            self.setMinimumHeight(500)
 
     def selection_changed(self):
         if self.selectedItems():

@@ -13,8 +13,10 @@ from PyQt5.QtCore import pyqtSignal
 
 class Player(QWidget):
     # signal that there is a new frame for the selected universe
-    new_frame = pyqtSignal(QPixmap)
+    new_pix = pyqtSignal(QPixmap)
+    new_image = pyqtSignal(QImage)
     new_load = pyqtSignal()
+    new_frame = pyqtSignal()
     new_frame_index = pyqtSignal(int)
     clear = pyqtSignal()
     __players__ = []
@@ -55,11 +57,14 @@ class Player(QWidget):
         if ret:
             img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
             img = img.rgbSwapped()
+            self.image = img
+            self.new_image.emit(img)
             pix = QPixmap.fromImage(img)
             current_frame = self.cap.get(1)
             #print('render frame : ' + str(current_frame))
             # emit the new frame signal
-            self.new_frame.emit(pix)
+            self.new_pix.emit(pix)
+            self.new_frame.emit()
             self.new_frame_index.emit(current_frame)
             if current_frame == self.frames:
                 print(self.loop)
